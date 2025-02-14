@@ -1,0 +1,370 @@
+---
+import quotes from '../data/quotes.js';
+
+const randomRotations = Array.from({ length: 12 }, () => 
+  Math.floor(Math.random() * 20 - 10)
+);
+
+const noteStyles = [
+  { emoji: "❤️", color: "#ffebee", text: "Te amo" },
+  { emoji: "💕", color: "#fce4ec", text: "Mi amor" },
+  { emoji: "💝", color: "#f3e5f5", text: "Por siempre" },
+  { emoji: "🌸", color: "#fff3e0", text: "Eres especial" },
+  { emoji: "✨", color: "#e8f5e9", text: "Mi vida" },
+  { emoji: "🦋", color: "#e3f2fd", text: "Mi cielo" },
+  { emoji: "🌟", color: "#fffde7", text: "Mi todo" },
+  { emoji: "💖", color: "#fce4ec", text: "Mi luz" },
+  { emoji: "🌺", color: "#fff8e1", text: "Te adoro" },
+  { emoji: "💞", color: "#f8bbd0", text: "Mi corazón" },
+  { emoji: "🎀", color: "#f3e5f5", text: "Mi alegría" },
+  { emoji: "🕊️", color: "#e0f7fa", text: "Mi paz" }
+];
+
+const getRandomRotation = () => Math.floor(Math.random() * 20 - 10);
+---
+
+<div class="container">
+  <div class="overlay"></div>
+  <h1 class="title">Para Xiomara</h1>
+  
+  <div class="notes-container">
+    <div class="background-notes">
+      {noteStyles.map((style, index) => (
+        <div 
+          class="note background-note paper-effect" 
+          style={`
+            transform: rotate(${getRandomRotation()}deg);
+            background-color: ${style.color};
+          `}
+        >
+          <div class="note-content">
+            <span class="note-emoji">{style.emoji}</span>
+            <p class="note-text">{style.text}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    <div class="main-note paper-effect" id="mainNote">
+      <div class="sticky-top"></div>
+      <p id="quoteText" class="handwritten">GANADORA GANADORA!!!</p>
+      <span class="signature">Con amor, Jordy</span>
+    </div>
+    
+    <button id="newQuoteBtn" class="quote-button">
+      <span class="button-text">Nueva Frase</span>
+      <span class="heart">❤️</span>
+    </button>
+  </div>
+</div>
+
+<script>
+  import quotes from '../data/quotes.js';
+  
+  let usedQuotes = new Set();
+  
+  function getRandomQuote() {
+    if (usedQuotes.size === quotes.length) {
+      usedQuotes.clear();
+    }
+    
+    let availableQuotes = quotes.filter(quote => !usedQuotes.has(quote));
+    let randomQuote = availableQuotes[Math.floor(Math.random() * availableQuotes.length)];
+    usedQuotes.add(randomQuote);
+    return randomQuote;
+  }
+  
+  const quoteText = document.getElementById('quoteText');
+  const newQuoteBtn = document.getElementById('newQuoteBtn');
+  
+  newQuoteBtn?.addEventListener('click', () => {
+    if (quoteText) {
+      quoteText.style.opacity = '0';
+      setTimeout(() => {
+        quoteText.textContent = getRandomQuote();
+        quoteText.style.opacity = '1';
+      }, 300);
+    }
+  });
+</script>
+
+<style>
+  @import '@fontsource/indie-flower';
+  @import '@fontsource/caveat';
+  @import '@fontsource/patrick-hand';
+
+  .container {
+    min-height: 100vh;
+    background: 
+      radial-gradient(circle at 50% 50%, #ff9a9e 0%, #fad0c4 45%, #fad0c4 100%);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.1) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.1) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    pointer-events: none;
+  }
+
+  .title {
+    font-family: 'Caveat', cursive;
+    font-size: 4.5rem;
+    color: #2c3e50;
+    text-shadow: 
+      2px 2px 0 #fff,
+      -2px -2px 0 #fff,
+      2px -2px 0 #fff,
+      -2px 2px 0 #fff;
+    margin-bottom: 2rem;
+    transform: rotate(-5deg);
+    position: relative;
+    z-index: 1;
+  }
+
+  .notes-container {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .paper-effect {
+    background: #fff;
+    border-radius: 2px;
+    box-shadow: 
+      0 1px 3px rgba(0,0,0,0.12),
+      0 1px 2px rgba(0,0,0,0.24),
+      0 10px 20px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  }
+
+  .background-notes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .note {
+    padding: 1.5rem;
+    font-family: 'Patrick Hand', cursive;
+  }
+
+  .background-note {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.95;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    overflow: hidden;
+  }
+
+  .note-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .note-emoji {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+  }
+
+  .note-text {
+    font-size: 1rem;
+    margin: 0;
+    color: #2c3e50;
+    font-family: 'Caveat', cursive;
+    line-height: 1.2;
+  }
+
+  .background-note:hover {
+    transform: scale(1.1) rotate(0deg) !important;
+    z-index: 5;
+    box-shadow: 
+      0 14px 28px rgba(0,0,0,0.25),
+      0 10px 10px rgba(0,0,0,0.22);
+  }
+
+  .background-note:nth-child(1) { top: 5%; left: 5%; }
+  .background-note:nth-child(2) { top: 15%; right: 10%; }
+  .background-note:nth-child(3) { bottom: 10%; left: 15%; }
+  .background-note:nth-child(4) { bottom: 20%; right: 20%; }
+  .background-note:nth-child(5) { top: 35%; left: 25%; }
+  .background-note:nth-child(6) { top: 45%; right: 30%; }
+  .background-note:nth-child(7) { bottom: 25%; left: 35%; }
+  .background-note:nth-child(8) { top: 55%; right: 40%; }
+  .background-note:nth-child(9) { top: 25%; left: 45%; }
+  .background-note:nth-child(10) { bottom: 35%; right: 15%; }
+  .background-note:nth-child(11) { top: 65%; left: 20%; }
+  .background-note:nth-child(12) { bottom: 15%; right: 25%; }
+
+  .main-note {
+    position: relative;
+    padding: 3rem;
+    width: 400px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 10;
+    background: #fff9c4;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    transform: rotate(2deg);
+  }
+
+  .sticky-top {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 25px;
+    background: rgba(255, 214, 0, 0.6);
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .signature {
+    position: absolute;
+    bottom: 20px;
+    right: 30px;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: rgba(44, 62, 80, 0.6);
+    transform: rotate(-5deg);
+    opacity: 0.7;
+  }
+
+  .main-note:hover {
+    box-shadow: 
+      0 14px 28px rgba(0,0,0,0.25),
+      0 10px 10px rgba(0,0,0,0.22);
+    transform: rotate(2deg) translateY(-5px);
+  }
+
+  .handwritten {
+    font-family: 'Indie Flower', cursive;
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin: 0;
+    transition: opacity 0.3s ease;
+    line-height: 1.6;
+    padding: 1rem;
+  }
+
+  .quote-button {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #ff6b6b 0%, #ff8787 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-family: 'Patrick Hand', cursive;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+  }
+
+  .quote-button:hover {
+    background: linear-gradient(135deg, #ff8787 0%, #ff6b6b 100%);
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  }
+
+  .quote-button:active {
+    transform: translateX(-50%) translateY(0);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+  }
+
+  .button-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .heart {
+    display: inline-block;
+    animation: pulse 1.5s ease-in-out infinite;
+    margin-left: 0.5rem;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+
+  @media (max-width: 768px) {
+    .title {
+      font-size: 3rem;
+    }
+
+    .background-note {
+      width: 80px;
+      height: 80px;
+    }
+
+    .note-emoji {
+      font-size: 1.5rem;
+    }
+
+    .note-text {
+      font-size: 0.8rem;
+    }
+
+    .main-note {
+      width: 300px;
+      height: 300px;
+      padding: 1.5rem;
+    }
+
+    .handwritten {
+      font-size: 1.4rem;
+    }
+
+    .signature {
+      font-size: 0.9rem;
+      bottom: 15px;
+      right: 20px;
+    }
+
+    .quote-button {
+      font-size: 1.1rem;
+      padding: 0.8rem 1.6rem;
+      bottom: -50px;
+    }
+  }
+</style>
